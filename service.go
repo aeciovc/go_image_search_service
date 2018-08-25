@@ -9,7 +9,7 @@ import(
 type Ping struct{}
 
 func (p *Ping) Ping(ctx context.Context, req *proto.PingRequest, rsp *proto.PingResponse) error {
-	log.Println("Responsing with pong...")
+	log.Println("[ImageSearchService] Responsing with pong...")
 	rsp.Message = "Pong " + req.Name
 	return nil
 }

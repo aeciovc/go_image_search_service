@@ -5,10 +5,8 @@ ENTRY_CLIENT=cmd/client/main.go
 NAME_CLIENT=image-search-client
 
 ENTRY_AMQP=cmd/imagesearch_amqp/main.go
-NAME_AMQP=image-search-service-amqp
 
 ENTRY_AMQP_RPC=cmd/imagesearch_amqp_rpc/main.go
-NAME_AMQP_RPC=image-search-service-amqp
 
 # Go deps
 dep_refresh:
@@ -21,13 +19,13 @@ dep_add:
 	@dep ensure -add $(src)
 	@printf "[+] Done!\n"
 
-# Protobuf complie
+# Protobuf compile
 compile_proto:
 	@printf "[+] Compiling protos.. "
 	@protoc --proto_path=$(GOPATH)/src:. --micro_out=. --go_out=. ./proto/*.proto
 	@printf "[+] Done!\n"
 
-#Build, Tests and Run
+#Build
 build:
 	@printf "[+] Bulding go service.. "
 	@mkdir -p bin
@@ -35,9 +33,11 @@ build:
 	@go build -o bin/$(NAME_CLIENT) $(ENTRY_CLIENT)
 	@printf "Done!\n"
 
+#Tests
 tests:
 	@go test -v -short
 
+#Run
 run_server:
 	@printf "[+] Running go service.. "
 	@./bin/$(NAME)

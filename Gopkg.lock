@@ -19,8 +19,8 @@
 [[projects]]
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
-  version = "v1.1.0"
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
 
 [[projects]]
   name = "github.com/hashicorp/consul"
@@ -126,10 +126,10 @@
   version = "v1.0.8"
 
 [[projects]]
-  branch = "master"
   name = "github.com/mitchellh/go-homedir"
   packages = ["."]
-  revision = "58046073cbffe2f25d425fe1331102f55cf719de"
+  revision = "ae18d6b8b3205b561c79e8e5f69bff09736185f4"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -138,10 +138,10 @@
   revision = "2bca23e0e452137f789efbc8610126fd8b94f73b"
 
 [[projects]]
-  branch = "master"
   name = "github.com/mitchellh/mapstructure"
   packages = ["."]
-  revision = "f15292f7a699fcc1a38a80977f80a046874ba8ac"
+  revision = "fa473d140ef3c6adf42d6b391fe76707f1f243c8"
+  version = "v1.0.0"
 
 [[projects]]
   branch = "master"
@@ -174,7 +174,7 @@
     "ed25519",
     "ed25519/internal/edwards25519"
   ]
-  revision = "80fca2ff14a3fb7db622c9a5462f8ce9ea026cba"
+  revision = "614d502a4dac94afa3a6ce146bd1736da82514c6"
 
 [[projects]]
   branch = "master"
@@ -187,11 +187,11 @@
     "ipv4",
     "ipv6"
   ]
-  revision = "f4c29de78a2a91c00474a2e689954305c350adf9"
+  revision = "4bcd98cce591d8c7061bf313d7a3cbad05b58549"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9a076fcce3af0e8f9db71b0bd082f38b5563313d5c1f8d9cc0a830563966690d"
+  inputs-digest = "c54ab8cecba8eeb1ba3f8b41ac6a73c6f7b526970d74e15cfc1c2aae0eec1d2b"
   solver-name = "gps-cdcl"
   solver-version = 1
