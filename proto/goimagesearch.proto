@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+service GoImageSearch {
+	rpc Ping(PingRequest) returns (PingResponse) {}
+}
+
+message PingRequest {
+	string name = 1;
+}
+
+message PingResponse {
+	string message = 2;
+}
