@@ -35,7 +35,7 @@ build:
 
 #Tests
 tests:
-	@go test -v -short
+	@go test ./... -v -short
 
 #Run
 run_server:

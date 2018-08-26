@@ -88,6 +88,12 @@ func Run() error{
 
 	go func() {
 			for d := range consumeChannel {
+
+
+					serializer := &NamekoSerializer{}
+					call, err := serializer.Unmarshall(d)
+					log.Println(" [.] Call:", call)
+
 					n := string(d.Body)
 					log.Println(" [.] details:", d.Exchange)
 					log.Println(" [.] details:", d.RoutingKey) // this is the method
@@ -95,11 +101,11 @@ func Run() error{
 					log.Println(" [.] details:", d)
 
 					log.Println(" [.] ping()", n)
-					f := GetServiceByName("ping")
+					f := GetServiceByName(call.MethodName)
 					response := f()
 					
-					err := channel.Publish(
-							"nameko-rpc", // exchange
+					err = channel.Publish(
+							d.Exchange, // exchange
 							d.ReplyTo, // routing key
 							false,     // mandatory
 							false,     // immediate
