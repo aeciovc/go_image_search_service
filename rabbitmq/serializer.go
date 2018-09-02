@@ -15,6 +15,9 @@ type Call struct{
 type Serializer interface {
 	Marshall(Call) (amqp.Delivery, error)
 	Unmarshall(amqp.Delivery) (Call, error)
+
+	//Encode method response to reply
+	Encode() []byte
 }
 
 
@@ -24,6 +27,11 @@ type Serializer interface {
 
 type NamekoSerializer struct{}
 
+type NamekoEncoder struct{
+	Result string `json:"result"`
+}
+
+//Receiver
 func (ns *NamekoSerializer) Unmarshall(d amqp.Delivery) (Call, error){
 	
 	contentType := d.ContentType
@@ -42,6 +50,20 @@ func (ns *NamekoSerializer) Unmarshall(d amqp.Delivery) (Call, error){
 	return Call{ContentType:contentType, ServiceName:serviceName, MethodName:methodName, Params:params}, nil
 }
 
+//Publisher
 func (ns *NamekoSerializer) Marshall(c Call) (amqp.Delivery, error){
 	return amqp.Delivery{}, nil
+}
+
+//Encoder
+func (ns *NamekoSerializer) Encode(value interface{}) []byte{
+
+	encode := NamekoEncoder{Result:value.(string)}
+
+	result, err := buildJSON(encode)
+	if err != nil{
+		return []byte{}
+	}
+
+	return result
 }

@@ -30,8 +30,8 @@ func main() {
 
 func onError(err error) {
 	if err != nil {
-			log.Fatalf("[ImageSearchService] %s", err)
-			panic(fmt.Sprintf("%s", err))
+		log.Fatalf("[ImageSearchService] %s", err)
+		panic(fmt.Sprintf("%s", err))
 	}
 }
 

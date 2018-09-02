@@ -92,7 +92,7 @@ func Run() error{
 
 					serializer := &NamekoSerializer{}
 					call, err := serializer.Unmarshall(d)
-					log.Println(" [.] Call:", call)
+					log.Println("[rabbitmq] Call:", call)
 
 					n := string(d.Body)
 					log.Println(" [.] details:", d.Exchange)
@@ -100,7 +100,7 @@ func Run() error{
 					log.Println(" [.] details:", d.ReplyTo)
 					log.Println(" [.] details:", d)
 
-					log.Println(" [.] ping()", n)
+					log.Println("[rabbitmq] method: ", n)
 					f := GetServiceByName(call.MethodName)
 					response := f()
 					
@@ -112,7 +112,7 @@ func Run() error{
 							amqp.Publishing{
 									ContentType:   "application/json",
 									CorrelationId: d.CorrelationId,
-									Body:          []byte(response),
+									Body:          serializer.Encode(response),
 							})
 					
 					if err != nil{
