@@ -11,3 +11,6 @@
 ### Go Patch ###
 /vendor/
 /Godeps/
+
+# Go dependencies
+*.lock

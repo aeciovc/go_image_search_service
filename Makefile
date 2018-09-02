@@ -37,14 +37,14 @@ build:
 tests:
 	@go test ./... -v -short
 
-#Run
-run_server:
-	@printf "[+] Running go service.. "
-	@./bin/$(NAME)
-
+#Run commands
 run_client:
 	@printf "[+] Running go client.. "
 	@./bin/$(NAME_CLIENT)
+
+run_server:
+	@printf "[+] Running go service.. "
+	@./bin/$(NAME)
 
 run_server_amqp:
 	go run $(ENTRY_AMQP) --broker=rabbitmq --broker_address=amqp://rabbitmq:rabbitmq@localhost

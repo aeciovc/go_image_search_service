@@ -10,6 +10,7 @@ func main() {
 	log.Println("Initializing service...")
 
 	// Build configs
+	//TODO Implementing gonf file to load these configs
 	serverConfig := rabbitmq.ServerConfig{URI:"amqp://rabbitmq:rabbitmq@localhost"}
 	queueConfig := rabbitmq.QueueConfig{Name:"rpc-storage_service"}
 
