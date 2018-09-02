@@ -36,5 +36,5 @@ func onError(err error) {
 }
 
 func ping() string {
-	return "{\"result\":\"pong\"}"
+	return "pong"
 }

@@ -16,7 +16,6 @@ type Serializer interface {
 	Marshall(Call) (amqp.Delivery, error)
 	Unmarshall(amqp.Delivery) (Call, error)
 
-	//Encode method response to reply
 	Encode() []byte
 }
 

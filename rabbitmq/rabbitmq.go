@@ -92,13 +92,12 @@ func Run() error{
 
 					serializer := &NamekoSerializer{}
 					call, err := serializer.Unmarshall(d)
-					log.Println("[rabbitmq] Call:", call)
+					log.Println("[rabbitmq] call:", call)
 
 					n := string(d.Body)
-					log.Println(" [.] details:", d.Exchange)
-					log.Println(" [.] details:", d.RoutingKey) // this is the method
-					log.Println(" [.] details:", d.ReplyTo)
-					log.Println(" [.] details:", d)
+					log.Println("[rabbitmq] exchange:", d.Exchange)
+					log.Println("[rabbitmq] routing key:", d.RoutingKey)
+					log.Println("[rabbitmq] reply to:", d.ReplyTo)
 
 					log.Println("[rabbitmq] method: ", n)
 					f := GetServiceByName(call.MethodName)

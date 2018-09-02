@@ -4,7 +4,6 @@ import (
 	"testing"
 	"github.com/streadway/amqp"
 	test "github.com/aeciovc/go-image-search/test"
-	"log"
 )
 
 func TestNamekoSerializerUnmarshallSuccess(t *testing.T) {
@@ -21,7 +20,6 @@ func TestNamekoSerializerUnmarshallSuccess(t *testing.T) {
 	test.Equals(t, call.Params, []string{})
 }
 
-
 func TestNamekoSerializerEncodeStringFromMethodSuccess(t *testing.T) {
 
 	//Input
@@ -31,6 +29,33 @@ func TestNamekoSerializerEncodeStringFromMethodSuccess(t *testing.T) {
 
 	serializer := &NamekoSerializer{}
 	responseEncoded := serializer.Encode(methodResult)
-	log.Println("Result ", string(responseEncoded))
+
+	test.Equals(t, responseEncoded, []byte(expectedResult))
+}
+
+func TestNamekoSerializerEncodeEmptyStringFromMethodSuccess(t *testing.T) {
+
+	//Input
+	methodResult := ""
+	
+	expectedResult := "{\"result\":\"\"}"
+
+	serializer := &NamekoSerializer{}
+	responseEncoded := serializer.Encode(methodResult)
+
+	test.Equals(t, responseEncoded, []byte(expectedResult))
+}
+
+//TODO Implementing support to return int type
+func TestNamekoSerializerEncodeIntegerFromMethodSuccess(t *testing.T) {
+
+	//Input
+	methodResult := 10
+	
+	expectedResult := "{\"result\":\"10\"}"
+
+	serializer := &NamekoSerializer{}
+	responseEncoded := serializer.Encode(methodResult)
+
 	test.Equals(t, responseEncoded, []byte(expectedResult))
 }
