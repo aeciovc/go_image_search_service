@@ -40,12 +40,12 @@ func Connect(errFunc func(err error)){
 
 	//Queue
 	q, err := channel.QueueDeclare(
-			queueConfig.Name, // name
-			true,       // durable
-			false,       // delete when usused
-			false,       // exclusive
-			false,       // no-wait
-			nil,         // arguments
+		queueConfig.Name, // name
+		true,       // durable
+		false,       // delete when usused
+		false,       // exclusive
+		false,       // no-wait
+		nil,         // arguments
 	)
 	if err != nil{
 		log.Println("[rabbitmq] Failed to declare a queue")
@@ -55,9 +55,9 @@ func Connect(errFunc func(err error)){
 
 	//QoS
 	err = channel.Qos(
-			1,     // prefetch count
-			0,     // prefetch size
-			false, // global
+		1,     // prefetch count
+		0,     // prefetch size
+		false, // global
 	)
 	if err != nil{
 		log.Println("[rabbitmq] Failed to set QoS")
@@ -67,13 +67,13 @@ func Connect(errFunc func(err error)){
 
 	//Consumer
 	consumeChannel, err = channel.Consume(
-			q.Name, // queue
-			"",     // consumer
-			false,  // auto-ack
-			false,  // exclusive
-			false,  // no-local
-			false,  // no-wait
-			nil,    // args
+		q.Name, // queue
+		"",     // consumer
+		false,  // auto-ack
+		false,  // exclusive
+		false,  // no-local
+		false,  // no-wait
+		nil,    // args
 	)
 	if err != nil{
 		log.Println("[rabbitmq] Failed to register a consumer")
@@ -87,41 +87,43 @@ func Run() error{
 	forever := make(chan bool)
 
 	go func() {
-			for d := range consumeChannel {
+		for d := range consumeChannel {
 
+			serializer := GetSerializer()
+			
+			call, err := serializer.Unmarshall(d)
 
-					serializer := &NamekoSerializer{}
-					call, err := serializer.Unmarshall(d)
-					log.Println("[rabbitmq] call:", call)
+			log.Println("[rabbitmq] call:", call)
+			log.Println("[rabbitmq] exchange:", d.Exchange)
+			log.Println("[rabbitmq] routing key:", d.RoutingKey)
+			log.Println("[rabbitmq] reply to:", d.ReplyTo)
+			log.Println("[rabbitmq] method: ", string(d.Body))
 
-					n := string(d.Body)
-					log.Println("[rabbitmq] exchange:", d.Exchange)
-					log.Println("[rabbitmq] routing key:", d.RoutingKey)
-					log.Println("[rabbitmq] reply to:", d.ReplyTo)
+			//Get Service to invoke
+			method := GetServiceByName(call.MethodName)
+			
+			//Invoke method
+			response := invoke(method, call.Params...)
 
-					log.Println("[rabbitmq] method: ", n)
-					f := GetServiceByName(call.MethodName)
-					response := f()
-					
-					err = channel.Publish(
-							d.Exchange, // exchange
-							d.ReplyTo, // routing key
-							false,     // mandatory
-							false,     // immediate
-							amqp.Publishing{
-									ContentType:   "application/json",
-									CorrelationId: d.CorrelationId,
-									Body:          serializer.Encode(response),
-							})
-					
-					if err != nil{
-						log.Println("[rabbitmq] Failed to reply the message")
-						onError(err)
-						return
-					}
+			err = channel.Publish(
+				d.Exchange, // exchange
+				d.ReplyTo, // routing key
+				false,     // mandatory
+				false,     // immediate
+				amqp.Publishing{
+					ContentType:   "application/json",
+					CorrelationId: d.CorrelationId,
+					Body:          serializer.Encode(response),
+				})
 
-					d.Ack(false)
+			if err != nil{
+				log.Println("[rabbitmq] Failed to reply the message")
+				onError(err)
+				return
 			}
+
+			d.Ack(false)
+		}
 	}()
 
 	log.Printf(" [*] Awaiting RPC requests")
@@ -132,7 +134,7 @@ func Run() error{
 
 func failOnError(err error, msg string) {
 	if err != nil {
-			log.Fatalf("%s: %s", msg, err)
-			panic(fmt.Sprintf("%s: %s", msg, err))
+		log.Fatalf("%s: %s", msg, err)
+		panic(fmt.Sprintf("%s: %s", msg, err))
 	}
 }

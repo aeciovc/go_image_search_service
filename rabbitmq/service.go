@@ -1,19 +1,19 @@
 package rabbitmq
 
-var services map[string]func() string
+var services map[string] interface{}
 
 func init() {
-	services = make(map[string]func() string)
+	services = make(map[string] interface{})
 }
 
-func Register(methodName string, function func() string){
+func Register(methodName string, function interface{}){
 	services[methodName] = function
 }
 
-func GetServices() map[string]func() string {
+func GetServices() map[string] interface{} {
 	return services
 }
 
-func GetServiceByName(name string) func() string {
+func GetServiceByName(name string) interface{} {
 	return services[name]
 }

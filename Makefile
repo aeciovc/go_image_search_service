@@ -1,11 +1,12 @@
-ENTRY=cmd/imagesearch/main.go
+
+# go-micro framework
+ENTRY_MICRO_SERVER=cmd/imagesearch_micro/main.go
 NAME=image-search-service
 
-ENTRY_CLIENT=cmd/client/main.go
+ENTRY_MICRO_CLIENT=cmd/imagesearch_micro_client/main.go
 NAME_CLIENT=image-search-client
 
-ENTRY_AMQP=cmd/imagesearch_amqp/main.go
-
+# rabbitmq framework
 ENTRY_AMQP_RPC=cmd/imagesearch_amqp_rpc/main.go
 
 # Go deps
@@ -29,8 +30,8 @@ compile_proto:
 build:
 	@printf "[+] Bulding go service.. "
 	@mkdir -p bin
-	@go build -o bin/$(NAME) $(ENTRY)
-	@go build -o bin/$(NAME_CLIENT) $(ENTRY_CLIENT)
+	@go build -o bin/$(NAME) $(ENTRY_MICRO_SERVER)
+	@go build -o bin/$(NAME_CLIENT) $(ENTRY_MICRO_CLIENT)
 	@printf "Done!\n"
 
 #Tests
@@ -38,16 +39,13 @@ tests:
 	@go test ./... -v -short
 
 #Run commands
-run_client:
+run_client_micro:
 	@printf "[+] Running go client.. "
 	@./bin/$(NAME_CLIENT)
 
-run_server:
+run_server_micro:
 	@printf "[+] Running go service.. "
 	@./bin/$(NAME)
-
-run_server_amqp:
-	go run $(ENTRY_AMQP) --broker=rabbitmq --broker_address=amqp://rabbitmq:rabbitmq@localhost
 
 run_server_amqp_rpc:
 	go run $(ENTRY_AMQP_RPC)

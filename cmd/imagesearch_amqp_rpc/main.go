@@ -4,19 +4,25 @@ import (
 	"log"
 	"fmt"
 	"github.com/aeciovc/go-image-search/rabbitmq"
+	
+	imagesearch "github.com/aeciovc/go-image-search"
 )
 
 func main() {
-	log.Println("Initializing service...")
+	log.Println("[main] Initializing service...")
 
-	// Build configs
-	//TODO Implementing gonf file to load these configs
-	serverConfig := rabbitmq.ServerConfig{URI:"amqp://rabbitmq:rabbitmq@localhost"}
-	queueConfig := rabbitmq.QueueConfig{Name:"rpc-storage_service"}
+	//Load Configs
+	config := imagesearch.LoadConfigs()
+
+	// Build Server configs
+	serverConfig := rabbitmq.ServerConfig{URI:config.Service.Broker}
+	queueConfig := rabbitmq.QueueConfig{Name:config.Service.Queue}
 
 	// Register functions services
-	rabbitmq.Register("ping", ping)
-	log.Println(rabbitmq.GetServices())
+	service := &imagesearch.RabbitMQService{}
+
+	rabbitmq.Register("ping", service.Ping)
+	rabbitmq.Register("search", service.Search)
 
 	// Initialize the config
 	rabbitmq.Init(serverConfig, queueConfig)
@@ -26,16 +32,11 @@ func main() {
 
 	// Run
 	rabbitmq.Run()
-
 }
 
 func onError(err error) {
 	if err != nil {
-		log.Fatalf("[ImageSearchService] %s", err)
+		log.Fatalf("[main] %s", err)
 		panic(fmt.Sprintf("%s", err))
 	}
-}
-
-func ping() string {
-	return "pong"
 }

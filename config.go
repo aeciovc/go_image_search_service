@@ -15,6 +15,8 @@ type Configuration struct {
 
 type Service struct {
 	Name string `json:"Name"`
+	Queue string `json:"Queue"`
+	Broker string `json:"Broker"`
 }
 
 var configPath *string
@@ -28,12 +30,12 @@ func LoadConfigs() Configuration{
 	//File Config
 	flag.Parse()
 
-	log.Println("Loading from ", *configPath)
+	log.Println("[config] Loading from ", *configPath)
 
 	// Load the configuration file
 	err := gonf.Load(*configPath, &config)
 	if err != nil {
-		log.Fatal("Error loading configs: ", err)
+		log.Fatal("[config] Error loading configs: ", err)
 	}
 
 	return Config()

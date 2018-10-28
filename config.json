@@ -1,6 +1,8 @@
 {
 	"Service": {
-		"Name": "go-image-search-service"
+		"Name": "go-image-search-service",
+		"Queue": "rpc-image_search_service",
+		"Broker": "amqp://rabbitmq:rabbitmq@localhost"
 	}
 
 }

@@ -14,6 +14,7 @@ import (
 func main() {
 
 	service := micro.NewService()
+	
 	service.Init()
 
 	// Create new greeter client
@@ -29,11 +30,11 @@ func main() {
 	// Print response
 	log.Println(rsp.Message)
 
-	/*
-	log.Println("\n--- Call example ---")
+	
+	log.Println("\n--- Multiple Requests ---")
 	for i := 0; i < 10; i++ {
 		call(i, service.Client())
-	}*/
+	}
 }
 
 func call(i int, c client.Client) {
@@ -52,10 +53,9 @@ func call(i int, c client.Client) {
 
 	// Call service
 	if err := c.Call(ctx, req, rsp); err != nil {
-		log.Println("call err: ", err, rsp)
+		log.Println("Error: ", err, rsp)
 		return
 	}
 
 	log.Println("Call:", i, "rsp:", rsp.Message)
 }
-

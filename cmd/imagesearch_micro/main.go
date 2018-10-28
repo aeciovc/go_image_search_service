@@ -15,9 +15,10 @@ func main() {
 	// Parse CLI flags
 	cmd.Init()
 
+	//Load Configs
 	config := imagesearch.LoadConfigs()
 
-	//Load Service
+	//Build Service
 	service := micro.NewService(
 		micro.Name(config.Service.Name),
 	)
@@ -30,6 +31,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-    log.Println("Image Search Service is up!")
+    log.Println("[main] Image Search Service is up!")
 }
 
