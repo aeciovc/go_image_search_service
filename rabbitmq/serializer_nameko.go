@@ -4,7 +4,6 @@ import (
 	"github.com/streadway/amqp"
 	"strings"
 	"log"
-	"reflect"
 	"encoding/json"
 )
 
@@ -12,16 +11,27 @@ import (
 	Nameko Serializer
 **************************/
 
-type NamekoSerializer struct{}
+type NamekoSerializer struct{
+}
 
 type NamekoEncoder struct{
 	Result interface{} `json:"result"`
-	Error string 	   `json:"error"`
+	Error interface{}  `json:"error"`
+}
+
+type NamekoError struct{
+	ExcPath string `json:"exc_path"`
+}
+
+var namekoErrors = map[error]string{
+	ErrMethodNotFound: "nameko.exceptions.MethodNotFound",
+	ErrRemote: "nameko.exceptions.RemoteError",
 }
 
 //Python args
 type Params struct{
 	Args []string
+	//KWargs []string //not supported yet
 }
 
 //Receiver
@@ -50,26 +60,13 @@ func (ns *NamekoSerializer) Marshall(c Call) (amqp.Delivery, error){
 }
 
 //Encoder
-func (ns *NamekoSerializer) Encode(v interface{}) []byte{
+func (ns *NamekoSerializer) Encode(v interface{}, err error) []byte{
+	
+	//Get map error
+	errResult := ns.getError(err)
 
-	value := v.(reflect.Value)
-	typeOfValue := value.Type()
-	
-	log.Println("[NamekoSerializer] Kind of value: ", typeOfValue.Kind())
-	
-	encode := &NamekoEncoder{}
-	if typeOfValue.Kind() == reflect.String{
-		encode = &NamekoEncoder{Result:value.String()}
-	}else if typeOfValue.Kind() == reflect.Slice{
-		slice, ok := value.Interface().([]string)
-		if !ok{
-			log.Println("[NamekoSerializer] Error to convert slice ", slice)
-		}
-		encode = &NamekoEncoder{Result:slice}
-	}else{
-		//Unsupported type to return
-		encode = &NamekoEncoder{Error:"Unsupported type to return"}
-	}
+	//Build result
+	encode := &NamekoEncoder{Result:v, Error:errResult}
 
 	result, err := buildJSON(encode)
 	if err != nil{
@@ -87,9 +84,18 @@ func (ns *NamekoSerializer) getParams(body []byte, p *Params) []string{
 		return []string{}
 	}
 
+	log.Println("[NamekoSerializer] Body ", string(body))
 	if err := json.Unmarshal(body, p); err != nil{
-		log.Fatalf("[NamekoSerializer] Error unmarshall params: %s", err)
+		log.Printf("[NamekoSerializer] Error unmarshall params: %s", err)
 	}
 
 	return p.Args
+}
+
+func (ns *NamekoSerializer) getError(err error) interface{}{
+	if err != nil{
+		return NamekoError{ExcPath:namekoErrors[err]}
+	}
+
+	return ""
 }

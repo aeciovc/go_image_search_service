@@ -22,7 +22,14 @@ func (rs *RabbitMQService) Ping() string {
 	return "pong"
 }
 
-func (rs *RabbitMQService) Search(query string) []string {
+
+func (rs *RabbitMQService) SearchList(query string) []string{
 	log.Println("[RabbitMQService] searching for ", query)
 	return []string{"http://www.google.com.br/dkmfkng", "http://www.ghdjdkf.com"}
+}
+
+func (rs *RabbitMQService) SearchObjects(query string) []Image{
+	log.Println("[RabbitMQService] searching for ", query)
+	img1 := Image{Address:"https://encrypted-tbn0.gsta", ContentType:"image/png"}
+	return []Image{img1}
 }

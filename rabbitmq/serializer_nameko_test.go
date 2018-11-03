@@ -25,12 +25,12 @@ func TestNamekoSerializerEncodeStringFromMethodSuccess(t *testing.T) {
 	//Input
 	methodResult := "pong"
 	
-	expectedResult := "{\"result\":\"pong\"}"
+	expectedResult := "{\"result\":\"pong\",\"error\":\"\"}"
 
 	serializer := &NamekoSerializer{}
-	responseEncoded := serializer.Encode(methodResult)
+	responseEncoded := serializer.Encode(methodResult, nil)
 
-	test.Equals(t, responseEncoded, []byte(expectedResult))
+	test.Equals(t, string(responseEncoded), string(expectedResult))
 }
 
 func TestNamekoSerializerEncodeEmptyStringFromMethodSuccess(t *testing.T) {
@@ -38,24 +38,49 @@ func TestNamekoSerializerEncodeEmptyStringFromMethodSuccess(t *testing.T) {
 	//Input
 	methodResult := ""
 	
-	expectedResult := "{\"result\":\"\"}"
+	expectedResult := "{\"result\":\"\",\"error\":\"\"}"
 
 	serializer := &NamekoSerializer{}
-	responseEncoded := serializer.Encode(methodResult)
+	responseEncoded := serializer.Encode(methodResult, nil)
 
-	test.Equals(t, responseEncoded, []byte(expectedResult))
+	test.Equals(t, string(responseEncoded), string(expectedResult))
 }
 
-//TODO Implementing support to return int type
 func TestNamekoSerializerEncodeIntegerFromMethodSuccess(t *testing.T) {
 
 	//Input
 	methodResult := 10
 	
-	expectedResult := "{\"result\":\"10\"}"
+	expectedResult := "{\"result\":10,\"error\":\"\"}"
 
 	serializer := &NamekoSerializer{}
-	responseEncoded := serializer.Encode(methodResult)
+	responseEncoded := serializer.Encode(methodResult, nil)
 
-	test.Equals(t, responseEncoded, []byte(expectedResult))
+	test.Equals(t, string(responseEncoded), expectedResult)
+}
+
+func TestNamekoSerializerEncodeArrayOfStringFromMethodSuccess(t *testing.T) {
+
+	//Input
+	methodResult := []string{"a", "b", "c"}
+	
+	expectedResult := "{\"result\":[\"a\",\"b\",\"c\"],\"error\":\"\"}"
+
+	serializer := &NamekoSerializer{}
+	responseEncoded := serializer.Encode(methodResult, nil)
+
+	test.Equals(t, string(responseEncoded), expectedResult)
+}
+
+func TestNamekoSerializerEncodeBooleanFromMethodSuccess(t *testing.T) {
+
+	//Input
+	methodResult := true
+	
+	expectedResult := "{\"result\":true,\"error\":\"\"}"
+
+	serializer := &NamekoSerializer{}
+	responseEncoded := serializer.Encode(methodResult, nil)
+
+	test.Equals(t, string(responseEncoded), expectedResult)
 }

@@ -22,7 +22,8 @@ func main() {
 	service := &imagesearch.RabbitMQService{}
 
 	rabbitmq.Register("ping", service.Ping)
-	rabbitmq.Register("search", service.Search)
+	rabbitmq.Register("search_list", service.SearchList)
+	rabbitmq.Register("search_objects", service.SearchObjects)
 
 	// Initialize the config
 	rabbitmq.Init(serverConfig, queueConfig)
