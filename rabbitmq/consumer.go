@@ -90,7 +90,9 @@ func Run() error{
 		for d := range consumeChannel {
 
 			serializer := GetSerializer()
+			invoker := GetInvoker()
 			
+			//Unmarshall request
 			call, err := serializer.Unmarshall(d)
 
 			log.Println("[rabbitmq] call:", call)
@@ -99,11 +101,17 @@ func Run() error{
 			log.Println("[rabbitmq] reply to:", d.ReplyTo)
 			log.Println("[rabbitmq] method: ", string(d.Body))
 
-			//Get Service to invoke
+			//Get registered method
 			method := GetServiceByName(call.MethodName)
-			
-			//Invoke method
-			response := invoke(method, call.Params...)
+
+			var response interface{}
+			if method != nil{
+				//Invoke method
+				response, err = invoker.Invoke(method, call.Params...)
+				log.Println("[rabbitmq] invoker error: ", response)
+			}else{
+				err = ErrMethodNotFound
+			}
 
 			err = channel.Publish(
 				d.Exchange, // exchange
@@ -113,7 +121,7 @@ func Run() error{
 				amqp.Publishing{
 					ContentType:   "application/json",
 					CorrelationId: d.CorrelationId,
-					Body:          serializer.Encode(response),
+					Body:          serializer.Encode(response, err),
 				})
 
 			if err != nil{
