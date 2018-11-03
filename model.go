@@ -9,3 +9,8 @@ type File struct {
 func NewFile(hash string, mediaType string, fileName string) *File {
 	return &File{Filename: fileName, Hash: hash, MediaType: mediaType}
 }
+
+type Image struct {
+	Address  string `sql:"not null; index;" json:"address"`
+	ContentType string `sql:"not null" json:"content-type"`
+}
